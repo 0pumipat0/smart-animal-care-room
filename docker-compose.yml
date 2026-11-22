@@ -1,0 +1,52 @@
+services:
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: animal-mqtt
+
+    ports:
+      - "1883:1883"
+
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+
+  mongodb:
+    image: mongo:7
+    container_name: animal-mongodb
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo_data:/data/db
+
+
+  backend:
+    build: ./backend
+
+    container_name: animal-backend
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - mqtt
+      - mongodb
+
+
+  webapp:
+    build: ./webapp
+
+    container_name: animal-web
+
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      - backend
+
+
+volumes:
+
+  mongo_data:

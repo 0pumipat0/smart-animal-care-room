@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Animal Care Room</title>
+
+    <link rel="stylesheet"
+          href="/static/style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+
+        🐾
+
+        <div>
+
+            <h1>
+                Smart Animal Care Room
+            </h1>
+
+            <span>
+                ห้องดูแลสัตว์เลี้ยงอัจฉริยะ
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="online">
+
+        🟢 ระบบออนไลน์
+
+    </div>
+
+</header>
+
+
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside>
+
+        <div class="menu active">
+
+            🏠 หน้าหลัก
+
+        </div>
+
+
+        <div class="menu">
+
+            📊 ข้อมูลย้อนหลัง
+
+        </div>
+
+
+        <div class="menu">
+
+            ⚙️ ตั้งค่า
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main>
+
+
+        <h2>
+            สถานะห้อง
+        </h2>
+
+
+
+        <!-- SENSOR CARDS -->
+
+        <div class="sensor-grid">
+
+
+            <!-- TEMPERATURE -->
+
+            <div class="sensor-card">
+
+                <div class="icon blue">
+
+                    🌡️
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        อุณหภูมิ
+                    </span>
+
+
+                    <h2 id="temperature">
+                        -- °C
+                    </h2>
+
+
+                    <small>
+                        ปกติ
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HUMIDITY -->
+
+            <div class="sensor-card">
+
+                <div class="icon blue">
+
+                    💧
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        ความชื้น
+                    </span>
+
+
+                    <h2 id="humidity">
+                        -- %
+                    </h2>
+
+
+                    <small>
+                        ปกติ
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PM2.5 -->
+
+            <div class="sensor-card pm-card">
+
+                <div class="icon green">
+
+                    🌫️
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        PM2.5
+                    </span>
+
+
+                    <h2 id="pm25">
+                        -- µg/m³
+                    </h2>
+
+
+                    <small id="pmStatus">
+                        กำลังตรวจสอบ
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MOTION -->
+
+            <div class="sensor-card">
+
+                <div class="icon blue">
+
+                    🏃
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        การเคลื่อนไหว
+                    </span>
+
+
+                    <h2 id="motion">
+                        --
+                    </h2>
+
+
+                    <small>
+                        Laser
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- CONTENT GRID -->
+
+        <div class="content-grid">
+
+
+            <!-- PM2.5 CHART -->
+
+            <section class="panel">
+
+
+                <div class="panel-title">
+
+                    <h2>
+                        กราฟ PM2.5
+                    </h2>
+
+
+                    <span>
+                        ข้อมูลล่าสุด
+                    </span>
+
+                </div>
+
+
+                <div style="height: 350px;">
+
+                    <canvas id="pmChart"></canvas>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- DEVICE CONTROL -->
+
+            <section class="panel">
+
+
+                <h2>
+                    ควบคุมอุปกรณ์
+                </h2>
+
+
+
+                <!-- LIGHT -->
+
+                <div class="device">
+
+
+                    <div class="device-icon">
+                        💡
+                    </div>
+
+
+                    <div class="device-info">
+
+                        <b>
+                            ไฟ
+                        </b>
+
+
+                        <span id="lightState">
+                            ปิด
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="on"
+                        onclick="controlDevice('light','ON')">
+
+                        เปิด
+
+                    </button>
+
+
+                    <button
+                        class="off"
+                        onclick="controlDevice('light','OFF')">
+
+                        ปิด
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- AIR CONDITIONER -->
+
+                <div class="device">
+
+
+                    <div class="device-icon">
+                        ❄️
+                    </div>
+
+
+                    <div class="device-info">
+
+                        <b>
+                            แอร์
+                        </b>
+
+
+                        <span id="acState">
+                            ปิด
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="on"
+                        onclick="controlDevice('ac','ON')">
+
+                        เปิด
+
+                    </button>
+
+
+                    <button
+                        class="off"
+                        onclick="controlDevice('ac','OFF')">
+
+                        ปิด
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- FAN -->
+
+                <div class="device">
+
+
+                    <div class="device-icon">
+                        🌀
+                    </div>
+
+
+                    <div class="device-info">
+
+                        <b>
+                            พัดลม
+                        </b>
+
+
+                        <span id="fanState">
+                            ปิด
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="on"
+                        onclick="controlDevice('fan','ON')">
+
+                        เปิด
+
+                    </button>
+
+
+                    <button
+                        class="off"
+                        onclick="controlDevice('fan','OFF')">
+
+                        ปิด
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- AIR PURIFIER -->
+
+                <div class="auto-box">
+
+
+                    <div>
+
+                        <b>
+                            🌫️ เครื่องฟอกอากาศ
+                        </b>
+
+
+                        <span>
+                            ระบบอัตโนมัติ
+                        </span>
+
+                    </div>
+
+
+                    <strong id="airStatus">
+
+                        --
+
+                    </strong>
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+
+        <!-- AUTOMATION -->
+
+        <section class="automation">
+
+
+            <div class="robot">
+
+                🤖
+
+            </div>
+
+
+            <div>
+
+
+                <h2>
+                    ระบบอัตโนมัติ (ฝุ่น)
+                </h2>
+
+
+                <p>
+
+                    เครื่องฟอกอากาศจะเปิดอัตโนมัติเมื่อ
+
+                    <b>
+                        PM2.5 ≥ 37.5 µg/m³
+                    </b>
+
+                </p>
+
+
+                <p>
+
+                    และจะปิดเมื่อ PM2.5 ≤
+
+                    <b>
+                        35 µg/m³
+                    </b>
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="auto-status">
+
+
+                <span>
+                    สถานะเครื่องฟอกอากาศ
+                </span>
+
+
+                <h2 id="autoStatus">
+
+                    --
+
+                </h2>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- SENSOR STATUS -->
+
+        <section class="panel">
+
+
+            <h2>
+                สถานะเซนเซอร์
+            </h2>
+
+
+            <div class="sensor-bottom">
+
+
+                <!-- LASER -->
+
+                <div>
+
+                    <b>
+                        🎯 Laser
+                    </b>
+
+
+                    <p id="laserStatus">
+
+                        --
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- DHT11 -->
+
+                <div>
+
+                    <b>
+                        🌡️ DHT11
+                    </b>
+
+
+                    <p id="dhtStatus">
+
+                        --
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ALERT -->
+
+        <section class="alert-box">
+
+
+            <h2>
+                🔔 การแจ้งเตือน
+            </h2>
+
+
+            <p id="alert">
+
+                ระบบกำลังตรวจสอบข้อมูล...
+
+            </p>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    Smart Animal Care Room |
+
+    IoT + MQTT + MongoDB + Web Dashboard
+
+</footer>
+
+
+
+<!-- APP JAVASCRIPT -->
+
+<script src="/static/app.js"></script>
+
+
+</body>
+
+</html>
